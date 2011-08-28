@@ -1,6 +1,6 @@
 __module_name__ = "BetterKickban"
 __module_author__ = "Wa (logicplace.com)"
-__module_version__ = "0.2"
+__module_version__ = "0.3"
 __module_description__ = "A better version of kicking and banning."
 
 import xchat
@@ -69,8 +69,12 @@ def SaveINIish(etc):
 #endif
 
 banTimer = None
-def BanTimerGo(newInfo=None,newTime=None):
+def BanTimerGo(newInfo=None,newTime=None,onYouJoin=False):
 	global banTimer,nextBanInfo,nextBanTime
+	if onYouJoin:
+		newInfo = None
+		newTime = None
+	#endif
 	curTime = time()
 	if not newTime:
 		for servChan in banTimes:
@@ -238,7 +242,7 @@ def KickNick(word,word_eol,userdata):
 #enddef
 
 xchat.hook_print("Join", CheckJoin)
-xchat.hook_print("You Join", BanTimerGo)
+xchat.hook_print("You Join", BanTimerGo, True)
 xchat.hook_server("352", CheckWhoRet)
 for x in ["b","ban"]: xchat.hook_command(x,BanNick,None,xchat.PRI_HIGHEST)
 for x in ["-b","ub","unban"]: xchat.hook_command(x,UnbanNick,None,xchat.PRI_HIGHEST)
