@@ -1,6 +1,6 @@
 __module_name__ = "BetterKickban"
 __module_author__ = "Wa (logicplace.com)"
-__module_version__ = "0.1"
+__module_version__ = "0.2"
 __module_description__ = "A better version of kicking and banning."
 
 import xchat
@@ -216,17 +216,25 @@ def UnbanNick(word,word_eol,userdata):
 	return xchat.EAT_ALL
 #enddef
 
+nextkick = False
 def KickNick(word,word_eol,userdata):
-	global kickHandler
+	global kickHandler,nextkick
+	if nextkick:
+		nextkick = False
+		return xchat.EAT_NONE
+	#endif
 	messageIdx,btime = userdata
 	message = word_eol[messageIdx] if len(word_eol) > messageIdx else (
 		xchat.get_prefs("irc_kick_message") or "Your behavior is not conducive to the desired environment."
 	)
 	if btime: message += " (for "+btime+")"
-	xchat.unhook(kickHandler)
+	try: word_eol[2] = message
+	except IndexError: word_eol.append(message)
+	#xchat.unhook(kickHandler)
+	nextkick = True
 	xchat.command("kick "+word[1]+" "+message)
-	kickHandler = xchat.hook_command("kick",KickNick,1,xchat.PRI_HIGHEST)
-	return xchat.EAT_ALL
+	#kickHandler = xchat.hook_command("kick",KickNick,(2,None),xchat.PRI_HIGHEST)
+	return xchat.EAT_NONE
 #enddef
 
 xchat.hook_print("Join", CheckJoin)
@@ -234,7 +242,7 @@ xchat.hook_print("You Join", BanTimerGo)
 xchat.hook_server("352", CheckWhoRet)
 for x in ["b","ban"]: xchat.hook_command(x,BanNick,None,xchat.PRI_HIGHEST)
 for x in ["-b","ub","unban"]: xchat.hook_command(x,UnbanNick,None,xchat.PRI_HIGHEST)
-for x in ["k","kick"]: kickHandler = xchat.hook_command(x,KickNick,[2,None],xchat.PRI_HIGHEST)
+for x in ["k","kick"]: xchat.hook_command(x,KickNick,(2,None),xchat.PRI_HIGHEST)
 for x in ["kb","bk","kickban"]: xchat.hook_command(x,BanNick,True,xchat.PRI_HIGHEST)
 
 LoadINIish((banTimes,"bantimes",int))
