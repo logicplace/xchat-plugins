@@ -12,7 +12,7 @@ autoghost 0.3 - Nearly Complete - Needs to switch from using whois to who
 	Otherwise will wait till your prefered nick disconnects
 	either by waiting for the quit in current channels or polling whois
 
-betterkb 0.3 - Nearly complete
+betterkb 0.4 - Nearly complete
 	Allows you to kick and ban in more robust ways.
 	Set a default kick message via /set irc_kick_message MESSAGE
 	Can set a timer to remove bans, these are saved between sessions.
@@ -26,17 +26,22 @@ betterkb 0.3 - Nearly complete
 	4) *!*user@*
 	5) nick!*@*
 	Commands are:
-	/ban NICK [TYPE] [TIME]
-	/ban MASK [TIME]
+	/ban [FLAGS] NICK [TYPE] [TIME]
+	/ban [FLAGS] MASK [TIME]
 	/kick NICK [MESSAGE]
-	/kickban NICK [TYPE] [TIME] [MESSAGE]
+	/kickban [FLAGS] NICK [TYPE] [TIME] [MESSAGE]
 	/unban NICK
 	/unban MASK
 	/b is an alias of /ban
 	/k is an alias of /kick
 	/kb and /bk are aliases of /kickban
 	/ub and /-b are aliases of /unban
-	
+
+	Flags are:
+	-k = Kick also
+	-u = Time in seconds (eg. -u9001)
+	To use both, u must be last (eg -ku9001)
+
 	TODO:
 	Unban by nick when someone else banned the person.
 	Set a time for a ban not set by you via /unban NICK|MASK TIME

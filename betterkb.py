@@ -103,7 +103,10 @@ def BanTimerGo(newInfo=None,newTime=None,onYouJoin=False):
 
 def BanTimerTick(userdata=None):
 	global banTimer,banTimes,nextBanInfo,nextBanTime
-	xchat.unhook(banTimer)
+	if banTimer:
+		xchat.unhook(banTimer)
+		banTimer = None
+	#endif
 	banTime = nextBanTime
 	if userdata: servChan,mask,banTime = userdata
 	else: servChan,mask = nextBanInfo
@@ -111,7 +114,8 @@ def BanTimerTick(userdata=None):
 	context = xchat.find_context(serv,chan)
 	if context:
 		context.command("mode %s -b %s" % (chan,mask))
-		del banTimes[servChan][mask]
+		try: del banTimes[servChan][mask]
+		except KeyError: pass
 	#endif
 	if not userdata: nextBanInfo = nextBanTime = None
 	BanTimerGo()
@@ -141,8 +145,25 @@ def BanNick(word,word_eol,kickAfter):
 	if len(word) < 2: return xchat.EAT_NONE # Fixes complaining when I manually unban..
 	context = xchat.get_context()
 	servChan = context.get_info("host")+"/"+context.get_info("channel")
-	nick = word[1]
-	args = 2
+	if word[1][0] == '-':
+		i = 1
+		while i < len(word[1]):
+			if word[1][i] in 'kK': kickAfter = True
+			elif word[1][i] in 'uU':
+				try:
+					ttime = int(word[1][i+1:])
+				except ValueError:
+					xchat.prnt("u argument should come last and be followed only by numbers.")
+				#endtry
+			#endif
+			i += 1
+		#endwhile
+		nick = word[2]
+		args = 3
+	else:
+		nick = word[1]
+		args = 2
+	#endif
 	btype = reBanType.match(word[args]) if len(word) > args else None
 	if btype: args += 1
 	btime = reTime.match(word[args]) if len(word) > args else None
@@ -157,7 +178,7 @@ def BanNick(word,word_eol,kickAfter):
 		nmask,umask,hmask = btype.groups()[1:]
 		if servChan in hosts and nick in hosts[servChan]:
 			user,host = hosts[servChan][nick]
-			
+
 			mask = (nmask.replace("nick","n").replace("n",nick)+"!"
 			+(lambda u: "*"+(user[1:] if user[0] == "~" else user)+u[2:] if umask[0:2] == "*u" else u.replace("u",user))(
 				umask.replace("user","u")
@@ -180,20 +201,24 @@ def BanNick(word,word_eol,kickAfter):
 		xchat.prnt("No one to ban.")
 		return xchat.EAT_ALL
 	#endif
-	
+
 	if servChan not in bannedNicks: bannedNicks[servChan] = {}
 	bannedNicks[servChan][nick] = mask
-	
+
 	if btime:
 		if servChan not in banTimes: banTimes[servChan] = {}
 		t = map(int,list(btime.groups("0")))
 		# w,d,h,m,s,h,m,s
-		ttime = banTimes[servChan][mask] = (int(time()) + t[0]*604800 + t[1]*86400
+		ttime = (t[0]*604800 + t[1]*86400
 		+ t[2]*3600 + t[3]*60 + t[4]
 		+ t[5]*3600 + t[6]*60 + t[7])
+	#endif
+	if ttime:
+		xchat.prnt("Banning %s for %i seconds." % (nick,ttime))
+		ttime = banTimes[servChan][mask] = int(time()) + ttime
 		BanTimerGo((servChan,mask),ttime)
 	#endif
-	
+
 	if kickAfter: KickNick(word,word_eol,(args,btime.group(0) if btime else None))
 	return xchat.EAT_ALL
 #enddef
