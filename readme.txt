@@ -95,7 +95,7 @@ nowplaying 0.1 - In Progress
 voiceonce 0.1 - Semi-experimental
 	Voice people the first time they join the room.
 
-youtubeinfo 0.7 - Nearly Complete
+youtubeinfo 0.8 - Nearly Complete
 	Shows formatted information for youtube links
 	Able to ignore channels (manually) in case there's a bot there that does it.
 	Able to tell the channel the printed info.
@@ -103,7 +103,6 @@ youtubeinfo 0.7 - Nearly Complete
 	/yti ignore CHANNEL
 	/yti unignore CHANNEL
 	TODO:
-	Support youtu.be links
 	Support more than # prefixed channels in un/ignore
 	Default un/ignore channel to selected channel
 	Support /yti ignore NICK [CHANNEL] to ignore a channel when a certain nick is there
