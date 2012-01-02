@@ -1,6 +1,6 @@
 __module_name__ = "BetterKickban"
 __module_author__ = "Wa (logicplace.com)"
-__module_version__ = "0.3"
+__module_version__ = "0.5"
 __module_description__ = "A better version of kicking and banning."
 
 import xchat
@@ -8,7 +8,7 @@ import re
 from time import time
 
 hosts = {}
-reNick = re.compile(r"^[a-zA-Z\[\]\\`_^{|}][a-zA-Z0-9\-\[\]\\`_^{|}]{0,8}$")
+reNick = re.compile(r"^[a-zA-Z\[\]\\`_^{|}][a-zA-Z0-9\-\[\]\\`_^{|}]*$")
 reMask = re.compile(r"^.+!.+@.+$")
 reBanType = re.compile(r"^(?:([0-9]+)|(\*|\*?(?:n|nick)\*?)!(\*|\*?(?:u|user)\*?)@"
 	+r"(\*|(?:\*\.?)?(?:h|host)\*?|\*\.tld))$"
@@ -20,6 +20,9 @@ banNums = map(reBanType.match,["*!*@*.host","*!*@host","*!*user@*.host","*!*user
 
 bannedNicks = {}
 banTimes = {}
+banOpts = { "*": {
+	"irc_kick_message": "Your behavior is not conducive to the desired environment."
+}}
 nextBanInfo = None
 nextBanTime = None
 
@@ -145,6 +148,7 @@ def BanNick(word,word_eol,kickAfter):
 	if len(word) < 2: return xchat.EAT_NONE # Fixes complaining when I manually unban..
 	context = xchat.get_context()
 	servChan = context.get_info("host")+"/"+context.get_info("channel")
+	ttime = None
 	if word[1][0] == '-':
 		i = 1
 		while i < len(word[1]):
@@ -160,9 +164,11 @@ def BanNick(word,word_eol,kickAfter):
 		#endwhile
 		nick = word[2]
 		args = 3
+		nickLoc = 2
 	else:
 		nick = word[1]
 		args = 2
+		nickLoc = 1
 	#endif
 	btype = reBanType.match(word[args]) if len(word) > args else None
 	if btype: args += 1
@@ -219,7 +225,7 @@ def BanNick(word,word_eol,kickAfter):
 		BanTimerGo((servChan,mask),ttime)
 	#endif
 
-	if kickAfter: KickNick(word,word_eol,(args,btime.group(0) if btime else None))
+	if kickAfter: KickNick(word,word_eol,(nickLoc,args,btime.group(0) if btime else None))
 	return xchat.EAT_ALL
 #enddef
 
@@ -247,35 +253,57 @@ def UnbanNick(word,word_eol,userdata):
 
 nextkick = False
 def KickNick(word,word_eol,userdata):
-	global kickHandler,nextkick
+	global nextkick
 	if nextkick:
 		nextkick = False
 		return xchat.EAT_NONE
 	#endif
-	messageIdx,btime = userdata
+	nickLoc,messageIdx,btime = userdata
+	try: irc_kick_message = banOpts["*"]["irc_kick_message"]
+	except KeyError: irc_kick_message = None
 	message = word_eol[messageIdx] if len(word_eol) > messageIdx else (
-		xchat.get_prefs("irc_kick_message") or "Your behavior is not conducive to the desired environment."
+		irc_kick_message or "Your behavior is not conducive to the desired environment."
 	)
 	if btime: message += " (for "+btime+")"
 	try: word_eol[2] = message
 	except IndexError: word_eol.append(message)
-	#xchat.unhook(kickHandler)
 	nextkick = True
-	xchat.command("kick "+word[1]+" "+message)
-	#kickHandler = xchat.hook_command("kick",KickNick,(2,None),xchat.PRI_HIGHEST)
+	xchat.command("kick "+word[nickLoc]+" "+message)
+	return xchat.EAT_ALL
+#enddef
+
+def SetMessage(word,word_eol,userdata):
+	global banOpts
+	if "*" not in banOpts: banOpts["*"] = {}
+	if word[1] == "irc_kick_message":
+		if len(word_eol) > 2: # Set
+			banOpts["*"]["irc_kick_message"] = word_eol[2]
+			xchat.prnt("%s set to: %s" % (word[1],word_eol[2]))
+		else:
+			dots = 29-len(word[1])
+			try: irc_kick_message = banOpts["*"]["irc_kick_message"]
+			except KeyError: irc_kick_message = None
+			xchat.prnt(word[1]+"\00318"+("."*dots)+"\00319:\x0f "+irc_kick_message)
+		#endif
+		return xchat.EAT_XCHAT
+	#endif
+
 	return xchat.EAT_NONE
 #enddef
 
 xchat.hook_print("Join", CheckJoin)
 xchat.hook_print("You Join", BanTimerGo, True)
 xchat.hook_server("352", CheckWhoRet)
+xchat.hook_command("set",SetMessage)
 for x in ["b","ban"]: xchat.hook_command(x,BanNick,None,xchat.PRI_HIGHEST)
 for x in ["-b","ub","unban"]: xchat.hook_command(x,UnbanNick,None,xchat.PRI_HIGHEST)
-for x in ["k","kick"]: xchat.hook_command(x,KickNick,(2,None),xchat.PRI_HIGHEST)
+for x in ["k","kick"]: xchat.hook_command(x,KickNick,(1,2,None),xchat.PRI_HIGHEST)
 for x in ["kb","bk","kickban"]: xchat.hook_command(x,BanNick,True,xchat.PRI_HIGHEST)
 
 LoadINIish((banTimes,"bantimes",int))
 xchat.hook_unload(SaveINIish,(banTimes,"bantimes"))
 LoadINIish((bannedNicks,"bannednicks",str))
 xchat.hook_unload(SaveINIish,(bannedNicks,"bannednicks"))
+LoadINIish((banOpts,"banopts",str))
+xchat.hook_unload(SaveINIish,(banOpts,"banopts"))
 xchat.prnt("Loaded %s version %s." % (__module_name__,__module_version__))

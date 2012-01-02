@@ -12,7 +12,7 @@ autoghost 0.3 - Nearly Complete - Needs to switch from using whois to who
 	Otherwise will wait till your prefered nick disconnects
 	either by waiting for the quit in current channels or polling whois
 
-betterkb 0.4 - Nearly complete
+betterkb 0.5 - Nearly complete
 	Allows you to kick and ban in more robust ways.
 	Set a default kick message via /set irc_kick_message MESSAGE
 	Can set a timer to remove bans, these are saved between sessions.
