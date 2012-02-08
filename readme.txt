@@ -63,8 +63,9 @@ delayedmsg 1.0 - Complete
 	for the first time.
 	Use /dlm for help
 
-nosajoin 0.0 - Experimental
-	GOAL: Automatically part rooms that you were forced to join.
+nosajoin 1.0 - Complete
+	If you're forcibly joined to a channel, this sends a part message and
+	never lets xchat know it happened (ie. a tab for the channel does not open).
 
 nowplaying 0.1 - In Progress
 	Simple NowPlaying script to show what's now playing on your system

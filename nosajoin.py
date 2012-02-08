@@ -1,30 +1,35 @@
 __module_name__ = "No SaJoin"
 __module_author__ = "Wa"
-__module_version__ = "0.0"
-__module_description__ = "Autopart rooms that you don't join yourself"
+__module_version__ = "1.0"
+__module_description__ = "Prevents being /sajoin'd by an IRCOp"
 
 import xchat
 
-dDidJoin = {}
+didJoin = {}
 def DidJoin(word,word_eol,userdata):
-	global dDidJoin
-	dDidJoin[word[1]] = True
+	global didJoin
+	didJoin[xchat.get_info("server") + "/" + word[1]] = True
 #enddef
 
+def fc(word): return word[1:] if word[0] == ":" else word
+
 def OrDidI(word,word_eol,userdata):
-	global dDidJoin
-	sName = word[0]
-	sName = sName[1:sName.find("!")]
-	if sName == xchat.get_info("nick"):
-		sChan = word[2]
-		if sChan[0] == ":": sChan = sChan[1:]
-		if sChan not in dDidJoin:
-			xchat.command("part " + sChan)
+	global didJoin
+	nick = word[0]
+	nick = nick[1:nick.find("!")]
+	if nick == xchat.get_info("nick"):
+		chan = fc(word[2])
+		if chan[0] == ":": chan = chan[1:]
+		servChan = xchat.get_info("server") + "/" + chan
+		if servChan not in didJoin:
+			xchat.command("part " + chan)
+			return xchat.EAT_ALL
 		else:
-			del dDidJoin[sChan]
+			del didJoin[servChan]
 		#endif
 	#endif
 #enddef
 
 xchat.hook_server("JOIN",OrDidI)
 xchat.hook_command("join",DidJoin)
+xchat.prnt("Loaded %s version %s." % (__module_name__,__module_version__))
