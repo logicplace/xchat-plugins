@@ -1,6 +1,6 @@
 __module_name__ = "YouTubeInfo"
 __module_author__ = "Wa (logicplace.com)"
-__module_version__ = "0.8"
+__module_version__ = "0.8.1"
 __module_description__ = "Display YouTube video's info when a link is given."
 
 import os
@@ -58,7 +58,7 @@ def SaveSettings():
 #enddef
 
 dAntiSpam={}
-reFindyt=re.compile(r'http://(?:[^.]*\.?youtube\.com/watch\?.*v=|youtu.be/)([a-zA-Z0-9_\-]+)')
+reFindyt=re.compile(r'https?://(?:[^.]*\.?youtube\.com/watch\?.*v=|youtu.be/)([a-zA-Z0-9_\-]+)')
 reSelector=re.compile(r'^([a-zA-Z_][a-zA-Z0-9_:]*)?(?:\(([0-9]+)\))?(?:\[([a-zA-Z_][a-zA-Z0-9_:]*])\])?$')
 def LookForLink(word,word_eol,userdata,alt=0):
 	global reFindyt,reSelector
