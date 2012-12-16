@@ -46,17 +46,36 @@ betterkb 0.5 - Nearly complete
 	Unban by nick when someone else banned the person.
 	Set a time for a ban not set by you via /unban NICK|MASK TIME
 
-ctcp 1.0 - Complete
-	Send text files and avatars via ctcp.
+ctcp 1.1 - Complete
+	Send text files and avatars via CTCP. Conditionalize CTCP responses.
 	Includes spam protection.
-	Set up ctcp responses in xchat settings.
+	Set up ctcp responses in XChat settings.
 	Commands are:
-	/dump TEXTFILE
-	/face
-	/face exist
-	/face ascii
-	TEXTFILE is relative to %xchatdir%/settings/ctcp
+	/dump NICK TEXTFILE
+	/face NICK
+	/face NICK ascii
+	/offtime NICK OFFSET [FORMAT]
+	/ifuser USER COMMAND
+	/ifnotuser USER COMMAND
+	/vercond CONDITION [ARGUMENTS]
+	NICK is who to send the response to.
+	TEXTFILE is relative to %xchatdir%/settings/ctcp and .txt is appended.
 	Avatar should be saved as face.png or face.txt in the above directory.
+	OFFSET is of the format #d#h#m#s where each is optional, and negatives are
+	allowed. For example, /offtime Person 2h replies to Person's time request
+	with your local time + 2 hours.
+	FORMAT is optional and uses Python's datetime.strftime to print. Default is
+	XChat's format (at least, my version of XChat).
+	Conditionals work by checking the condition before processing the command.
+	It should be pretty obvious but an example is:
+		ifnotuser Anonymous dump %s my-personal-info
+	Condition "user" refers to your username in the context requested. Case
+	sensitive.
+	/vercond allows you to set the condition on which you reply to version
+	requests, since it's internal. For example:
+		/vercond ifnotuser Anonymous
+	To prevent version requests always, use /vercond false
+	To always reply to version requests, use /vercond true
 
 delayedmsg 1.0 - Complete
 	Sends a message after so many milliseconds to people who join the room
