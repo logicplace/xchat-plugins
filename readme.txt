@@ -88,8 +88,7 @@ h-tan 1.0 - Complete
     This makes the join/part/etc not highlight the channel as if a message was
     sent, but it does for regular channel messages and actions. Those are also
     sent as the original sender, rather than H-tan.
-    このスクリプトは#japaneseのためのものだ。http://www.japanese-irc.net/　を見て
-    ください。
+    このスクリプトは#japaneseのためのものだ。http://www.japanese-irc.net/ を見てください。
     emit_printと/recvはH-tanかU-tanのメッセージの代理をする。
     それから、joinやpartがメッセージの通知のように見えないけど、本当のメッセージの通知が
     正しく見える。そのメッセージは発信人から送信して見えた、H-tanからない。
