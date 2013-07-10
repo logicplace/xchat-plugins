@@ -6,7 +6,7 @@ import dbus
 
 __module_name__ = "NowPlaying"
 __module_author__ = "Wa (logicplace.com)"
-__module_version__ = "0.1"
+__module_version__ = "0.2"
 __module_description__ = "Announce what's now playing on your [linux] system"
 
 #TODO: Why does this crash xchat on exit?
@@ -21,7 +21,7 @@ settingsLoc = os.path.join(settingsLoc,"nowplaying")
 
 try:
 	f = open(settingsLoc,"r")
-	now_playing_message = f.read() 
+	now_playing_message = f.read()
 	f.close()
 except IOError: now_playing_message = "me is listening to %(title) - %(artist)"
 
@@ -29,32 +29,16 @@ class Player:
 	def __init__(self,name,dbusInfo,playing,song):
 		global bus
 		self.name = name
-		
-		self.interface = []
-		nolist = False
-		if type(dbusInfo) is not list:
-			nolist = True
-			dbusInfo = [dbusInfo]
+		self._info = dbusInfo
+
+		if type(self._info) is not list:
+			self._nolist = True
+			self._info = [self._info]
 		#endif
-		for x in dbusInfo:
-			try:
-				self.interface.append(dbus.Interface(
-					bus.get_object(x["sender"],x["path"]),
-					x["interface"] if "interface" in x else x["sender"]
-				))
-			except dbus.exceptions.DBusException:
-				self.interface = None
-				nolist = False
-				break
-			except x:
-				self.interface = None
-				nolist = False
-				break
-				xchat.prnt(x)
-			#endtry
+		for x in self._info:
+			if "interface" not in x: x["interface"] = x["sender"]
 		#endfor
-		if nolist: self.interface = self.interface[0]
-		
+
 		# Function that returns true (player is playing music) or false (player is off)
 		self._playing = playing
 		# Function that returns song info: {
@@ -64,20 +48,42 @@ class Player:
 		# 	url:    URL related to the song
 		# 	length: Total length of the song in seconds
 		# 	time:   Current place in the song in seconds
-		# 	player: Name of the program playing the song # Added by this class! 
+		# 	player: Name of the program playing the song # Added by this class!
 		# }
 		self._song = song
 	#enddef
-	
+
+	def create(self):
+		ret = []
+
+		for x in self._info:
+			try:
+				ret.append(dbus.Interface(
+					bus.get_object(x["sender"],x["path"]),x["interface"]
+				))
+			except dbus.exceptions.DBusException: return None
+			# For some reason it's not catching the above..
+			except: return None
+			#endtry
+		#endfor
+		if self._nolist: return ret[0]
+		return ret
+	#enddef
+
 	def playing(self):
-		if self.interface is None: return False
-		return self._playing(self.interface)
+		intf = self.create()
+		if intf is None: return False
+		ret = self._playing(intf)
+		del intf
+		return ret
 	#endif
-	
+
 	def song(self):
-		if self.interface is None: return {}
-		ret = self._song(self.interface)
+		intf = self.create()
+		if intf is None: return {}
+		ret = self._song(intf)
 		ret["player"] = self.name
+		del intf
 		return ret
 	#enddef
 #endclass
@@ -131,15 +137,15 @@ psection = re.compile("(%\(([a-z]+)\))")
 def NowPlaying(word,word_eol,userdata):
 	msg = now_playing_message
 	if len(word) > 1: msg = word[1]+" "+msg.split(" ",1)[1]
-	
+
 	songData = None
 	for x in players:
-		if x.playing(): 
+		if x.playing():
 			songData = x.song()
 			break
 		#endif
 	#endfor
-	
+
 	if songData:
 		msgs = bsection.split(msg)
 		msg = ""
@@ -155,7 +161,7 @@ def NowPlaying(word,word_eol,userdata):
 	else:
 		xchat.prnt("Not playing anything")
 	#endif
-	
+
 	return xchat.EAT_XCHAT
 #enddef
 
@@ -171,13 +177,13 @@ def SetMessage(word,word_eol,userdata):
 		#endif
 		return xchat.EAT_XCHAT
 	#endif
-	
+
 	return xchat.EAT_NONE
 #enddef
 
 def SaveMessage(userdata):
 	f = open(settingsLoc,"w")
-	f.write(now_playing_message) 
+	f.write(now_playing_message)
 	f.close()
 #enddef
 
@@ -185,4 +191,4 @@ xchat.hook_command("np",NowPlaying)
 xchat.hook_command("set",SetMessage)
 xchat.hook_unload(SaveMessage)
 xchat.prnt("Loaded %s version %s." % (__module_name__,__module_version__))
-if xchat.FAUX: xchat.loop()
+
