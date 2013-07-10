@@ -64,7 +64,6 @@ def ProxyMessage(word, word_eol, userdata):
 				return xchat.EAT_XCHAT
 			#endif
 		#endfor
-		xchat.prnt(str([msg]))
 
 		return xchat.EAT_NONE
 #enddef
