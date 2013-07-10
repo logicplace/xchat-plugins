@@ -1,16 +1,16 @@
 __module_name__ = "H-tan"
 __module_author__ = "Muma (logicplace.com)"
-__module_version__ = "1.0"
+__module_version__ = "1.1"
 __module_description__ = "#japanese interchannl bot (H-tan) to emit_print"
 
 import xchat, re
 
-def Host(nick, network): return S(nick + "!~linked@" + network)
+def Host(network): return S("~linked@" + network)
 def S(arg): return arg.replace("\x02", "").replace("\x0f", "")
 
-def Join(args): return (S(args[0]), S(args[1]), Host(args[0], args[2]))
-def Part(args): return (S(args[0]), Host(args[0], args[2]), S(args[1]), args[3])
-def Quit(args): return (S(args[0]), args[2], Host(args[0], args[1]))
+def Join(args): return (S(args[0]), S(args[1]), Host(args[2]))
+def Part(args): return (S(args[0]), Host(args[2]), S(args[1]), args[3])
+def Quit(args): return (S(args[0] + "@" + args[1]), args[2], Host(args[1]))
 def Nick(args): return (S(args[0] + "@" + args[2]), S(args[1]))
 def Message(args): return (S(args[0]), args[1])
 def Action(args): return (S(args[0]), args[1])
@@ -50,8 +50,9 @@ def ProxyMessage(word, word_eol, userdata):
 					if k == "Action": msg = "\x01ACTION " + args[1] + "\x01"
 					else: msg = args[1]
 					# Emulate the message so that it will promote the channel status appropriately.
+					nick, host = args[0].split("@")
 					xchat.command("RECV :%s PRIVMSG %s :%s" % (
-						Host(*args[0].split("@")), word[2], msg
+						nick + "@" + host + "!" + Host(host), word[2], msg
 					))
 					return xchat.EAT_XCHAT
 				# Otherwise use the key.
