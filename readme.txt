@@ -82,7 +82,7 @@ delayedmsg 1.0 - Complete
     for the first time.
     Use /dlm for help
 
-h-tan 1.0 - Complete
+h-tan 1.2 - Complete
     A script for #japanese, see http://www.japanese-irc.net/
     Proxies H-tan/U-tan's messages through emit_print and /recv as needed.
     This makes the join/part/etc not highlight the channel as if a message was

@@ -1,6 +1,6 @@
 __module_name__ = "H-tan"
 __module_author__ = "Muma (logicplace.com)"
-__module_version__ = "1.1"
+__module_version__ = "1.2"
 __module_description__ = "#japanese interchannl bot (H-tan) to emit_print"
 
 import xchat, re
@@ -11,6 +11,7 @@ def S(arg): return arg.replace("\x02", "").replace("\x0f", "")
 def Join(args): return (S(args[0]), S(args[1]), Host(args[2]))
 def Part(args): return (S(args[0]), Host(args[2]), S(args[1]), args[3])
 def Quit(args): return (S(args[0] + "@" + args[1]), args[2], Host(args[1]))
+def Kick(args): return (S(args[0]), S(args[1]), Host(args[2]), args[3])
 def Nick(args): return (S(args[0] + "@" + args[2]), S(args[1]))
 def Message(args): return (S(args[0]), args[1])
 def Action(args): return (S(args[0]), args[1])
@@ -19,6 +20,7 @@ messages = {
 	"Join": (Join, re.compile(r'- Join ([^ ]+) to ([^ ]+) on ([^ ]+)')),
 	"Part": (Part, re.compile(r'- Part ([^ ]+) from ([^ ]+) on ([^:]+)(?::[\x02\x0f]? (.+))?')),
 	"Quit": (Quit, re.compile(r'- Quit ([^ ]+) from ([^:]+)(?::[\x02\x0f]? (.+))?')),
+	"Kick": (Kick, re.compile(r'- ([^ ]+) has kicked ([^ ]+) from ([^:]+)(?::[\x02\x0f]? (.+))?')),
 	"Change Nick": (Nick, re.compile(r'- ([^ ]+) is now known as ([^ ]+) on (.+)')),
 	"Message": (Message, re.compile(r'<\x02?[~&@%+]?([^>]+)> (.+)')),
 	"Action": (Action, re.compile(r'\* \x02?[~&@%+]?([^ ]+) (.+)')),
