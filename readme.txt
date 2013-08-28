@@ -7,7 +7,7 @@ fauxchat - Preliminary
     Instead of using  import xchat  use  import fauxchat as xchat
     It works the same way! Eventually, I may add some extra features.
 
-autoghost 0.3 - Nearly Complete - Needs to switch from using whois to who
+autoghost 0.4 - Nearly Complete - Needs to switch from using whois to who
     Ghosts your nick via nickserv if it can
     Otherwise will wait till your prefered nick disconnects
     either by waiting for the quit in current channels or polling whois

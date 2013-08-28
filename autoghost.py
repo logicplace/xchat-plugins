@@ -1,12 +1,16 @@
 __module_name__ = "AutoGhost"
 __module_author__ = "Wa (logicplace.com)"
-__module_version__ = "0.3"
+__module_version__ = "0.4"
 __module_description__ = "Ensures you have the nick you want by any means available."
 
 import xchat
 import string
 
-hF=open(xchat.get_info("xchatdir")+"/servlist_.conf")
+try: hF=open(xchat.get_info("xchatdir")+"/servlist_.conf")
+except IOError as err:
+	if err.errno == 2: hF=open(xchat.get_info("xchatdir")+"/servlist.conf")
+	else: raise
+#endtry
 lSL=hF.readlines()
 hF.close()
 
