@@ -1,6 +1,6 @@
 __module_name__ = "BetterKickban"
 __module_author__ = "Sapphire Becker (logicplace.com)"
-__module_version__ = "0.5"
+__module_version__ = "0.6"
 __module_description__ = "A better version of kicking and banning."
 
 import xchat
@@ -275,6 +275,13 @@ def KickNick(word,word_eol,userdata):
 def SetMessage(word,word_eol,userdata):
 	global banOpts
 	if "*" not in banOpts: banOpts["*"] = {}
+	
+	if len(word) < 2:
+		# Display mode
+		xchat.prnt("irc_kick_message.............: " + banOpts["*"]["irc_kick_message"])
+		return
+	#endif
+
 	if word[1] == "irc_kick_message":
 		if len(word_eol) > 2: # Set
 			banOpts["*"]["irc_kick_message"] = word_eol[2]

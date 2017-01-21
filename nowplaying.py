@@ -6,7 +6,7 @@ import dbus
 
 __module_name__ = "NowPlaying"
 __module_author__ = "Sapphire Becker (logicplace.com)"
-__module_version__ = "0.2"
+__module_version__ = "0.3"
 __module_description__ = "Announce what's now playing on your [linux] system"
 
 #TODO: Why does this crash xchat on exit?
@@ -167,6 +167,13 @@ def NowPlaying(word,word_eol,userdata):
 
 def SetMessage(word,word_eol,userdata):
 	global now_playing_message
+	
+	if len(word) < 2:
+		# Display mode
+		xchat.prnt("now_playing_message..........: " + now_playing_message)
+		return
+	#endif
+
 	if word[1] == "now_playing_message":
 		if len(word_eol) > 2: # Set
 			now_playing_message = word_eol[2]
