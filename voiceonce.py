@@ -1,5 +1,5 @@
 __module_name__ = "VoiceOnce"
-__module_author__ = "Wa (logicplace.com)"
+__module_author__ = "Sapphire Becker (logicplace.com)"
 __module_version__ = "0.1"
 __module_description__ = "Voices entrants on their first join"
 

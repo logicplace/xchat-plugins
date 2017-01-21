@@ -1,5 +1,5 @@
 __module_name__ = "AutoGhost"
-__module_author__ = "Wa (logicplace.com)"
+__module_author__ = "Sapphire Becker (logicplace.com)"
 __module_version__ = "0.4"
 __module_description__ = "Ensures you have the nick you want by any means available."
 

@@ -1,5 +1,5 @@
 __module_name__ = "CTCP"
-__module_author__ = "Wa (logicplace.com)"
+__module_author__ = "Sapphire Becker (logicplace.com)"
 __module_version__ = "1.1"
 __module_description__ = "Handles some extra ctcp functionality"
 

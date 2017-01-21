@@ -1,7 +1,7 @@
 __module_name__ = "H-tan"
-__module_author__ = "Muma (logicplace.com)"
+__module_author__ = "Sapphire Becker (Muma) (logicplace.com)"
 __module_version__ = "1.2"
-__module_description__ = "#japanese interchannl bot (H-tan) to emit_print"
+__module_description__ = "#japanese interchannel bot (H-tan) to emit_print"
 
 import xchat, re
 

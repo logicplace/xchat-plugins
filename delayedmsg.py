@@ -1,5 +1,5 @@
 __module_name__ = "DelayedMessage"
-__module_author__ = "Wa (logicplace.com)"
+__module_author__ = "Sapphire Becker (logicplace.com)"
 __module_version__ = "1.0"
 __module_description__ = "Delayed message for people that don't read the topic (everyone)"
 

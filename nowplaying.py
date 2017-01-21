@@ -5,7 +5,7 @@ import re
 import dbus
 
 __module_name__ = "NowPlaying"
-__module_author__ = "Wa (logicplace.com)"
+__module_author__ = "Sapphire Becker (logicplace.com)"
 __module_version__ = "0.2"
 __module_description__ = "Announce what's now playing on your [linux] system"
 

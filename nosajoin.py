@@ -1,5 +1,5 @@
 __module_name__ = "No SAJoin"
-__module_author__ = "Wa"
+__module_author__ = "Sapphire Becker"
 __module_version__ = "1.0"
 __module_description__ = "Prevents being /sajoin'd by an IRCOp"
 

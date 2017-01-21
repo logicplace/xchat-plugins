@@ -1,5 +1,5 @@
 __module_name__ = "YouTubeInfo"
-__module_author__ = "Wa (logicplace.com)"
+__module_author__ = "Sapphire Becker (logicplace.com)"
 __module_version__ = "0.8.1"
 __module_description__ = "Display YouTube video's info when a link is given."
 
