@@ -35,7 +35,12 @@ except ImportError:
 	#enddef
 	
 	def get_info(name):
-		if name == "xchatdir": return os.path.join(os.environ['HOME'],".xchat2")
+		if name == "xchatdir":
+			for x in [".xchat2", ".config/hexchat"]:
+				path = os.path.join(os.environ['HOME'], x)
+				if os.path.isdir(path): return path
+			#endfor
+		#endif
 	#enddef
 	
 	def get_prefs(name):
@@ -88,6 +93,16 @@ except ImportError:
 		_unloadHooks.append([callback,userdata])
 		_hooks.append([_unloadHooks,callback])
 		return len(_hooks)-1
+	#enddef
+
+	def hook_print(event, callback, userdata=None):
+		# TODO: Do something
+		pass
+	#enddef
+
+	def emit_print(pevent, *words):
+		# TODO: Load pevents.conf and deal with that.
+		print("PrintEvent %s: %s" % (pevent, ", ".join(words)))
 	#enddef
 	
 	def _line(txt):
