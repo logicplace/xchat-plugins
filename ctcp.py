@@ -4,7 +4,7 @@ __module_version__ = "1.1"
 __module_description__ = "Handles some extra ctcp functionality"
 
 import xchat
-import Image
+from PIL import Image
 import os, re, datetime
 
 pathToVercond = xchat.get_info("xchatdir") + "/settings/vercond.txt"
