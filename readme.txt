@@ -12,7 +12,7 @@ autoghost 0.4 - Nearly Complete - Needs to switch from using whois to who
     Otherwise will wait till your prefered nick disconnects
     either by waiting for the quit in current channels or polling whois
 
-betterkb 0.5 - Nearly complete
+betterkb 0.6 - Nearly complete
     Allows you to kick and ban in more robust ways.
     Set a default kick message via /set irc_kick_message MESSAGE
     Can set a timer to remove bans, these are saved between sessions.
@@ -97,7 +97,7 @@ nosajoin 1.0 - Complete
     If you're forcibly joined to a channel, this sends a part message and
     never lets xchat know it happened (ie. a tab for the channel does not open).
 
-nowplaying 0.1 - In Progress
+nowplaying 0.3 - In Progress
     Simple NowPlaying script to show what's now playing on your system
     Currently only for Linux
     Use /np to display now playing script, and set your message with
@@ -126,13 +126,15 @@ nowplaying 0.1 - In Progress
 voiceonce 0.1 - Semi-experimental
     Voice people the first time they join the room.
 
-youtubeinfo 0.8 - Nearly Complete
+youtubeinfo 0.9 - Nearly Complete
     Shows formatted information for youtube links
     Able to ignore channels (manually) in case there's a bot there that does it.
     Able to tell the channel the printed info.
     /yti say LINK
     /yti ignore CHANNEL
     /yti unignore CHANNEL
+    Use /yti with no arguments to view current settings.
+    You must set your own YouTube v3 API key with /yti v3key YOUR_KEY
     TODO:
     Support more than # prefixed channels in un/ignore
     Default un/ignore channel to selected channel
